@@ -1,0 +1,7 @@
+# SSH Remote Hosts Configuration
+# Format: alias  ip_address  username
+# One host per line. Lines starting with # are comments. Blank lines are ignored.
+
+# web01  10.0.1.10  admin
+# db01   10.0.1.20  postgres
+# bastion 10.0.1.1  deploy

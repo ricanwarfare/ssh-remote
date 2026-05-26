@@ -1,0 +1,16 @@
+# Host config with real IPs/usernames — keep private
+ssh-hosts.conf
+
+# Audit logs
+ssh-audit-logs/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Editor files
+*.swp
+*.swo
+*~
+.vscode/
+.idea/
