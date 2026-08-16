@@ -90,20 +90,24 @@ REMOTE_EOF
 }
 
 # --- Base64 transfer fallback (for hosts without SFTP support like Synology) ---
+# Safely single-quote a value for use inside a remote shell command string.
+# Replaces ' with '\'' so embedded single quotes can't break out of the quote.
+sq() { printf "'%s'" "${1//\'/\'\\\'\'}"; }
+
 base64_upload() {
   local local_file="$1" host_alias="$2" remote_path="$3"
   local IP="${HOST_IP[$host_alias]}"
   local USER="${USER_MAP[$host_alias]}"
   local B64
   B64=$(base64 -w 0 "$local_file")
-  ssh "$USER@$IP" "echo '$B64' | base64 -d > '$remote_path'"
+  ssh "$USER@$IP" "echo '$(sq "$B64")' | base64 -d > $(sq "$remote_path")"
 }
 
 base64_download() {
   local host_alias="$1" remote_path="$2" local_file="$3"
   local IP="${HOST_IP[$host_alias]}"
   local USER="${USER_MAP[$host_alias]}"
-  ssh "$USER@$IP" "base64 -w 0 '$remote_path'" | base64 -d > "$local_file"
+  ssh "$USER@$IP" "base64 -w 0 $(sq "$remote_path")" | base64 -d > "$local_file"
 }
 
 # --- 'hosts' subcommand: list all configured hosts ---
