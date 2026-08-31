@@ -251,11 +251,15 @@ USER="${USER_MAP[$ALIAS]}"
 DATE=$(date +%Y-%m-%d)
 TIMESTAMP=$(date '+%Y-%m-%d %H:%M:%S')
 
+# Sanitize for the audit log: a newline inside CMD would start a new log line
+# and let a command inject fake entries. Render newlines as literal \n.
+CMD_LOG="${CMD//$'\n'/\\n}"
+
 # Ensure local log directory exists
 mkdir -p "$LOCAL_LOG_DIR/${HOST}-${IP}"
 
 # Log locally before execution
-echo "[$TIMESTAMP] $AUDIT_USER: $USER@$IP: $CMD" >> "$LOCAL_LOG_DIR/${HOST}-${IP}/${DATE}.log"
+echo "[$TIMESTAMP] $AUDIT_USER: $USER@$IP: $CMD_LOG" >> "$LOCAL_LOG_DIR/${HOST}-${IP}/${DATE}.log"
 
 # Single SSH connection: log remotely, then execute the command
 # Encode the command in base64 to avoid shell injection in the remote echo
@@ -272,7 +276,7 @@ REMOTE_EOF
 
 # Log failure locally if command failed
 if [[ $EXIT_CODE -ne 0 ]]; then
-  echo "[$TIMESTAMP] FAILED (exit $EXIT_CODE): $USER@$IP: $CMD" >> "$LOCAL_LOG_DIR/${HOST}-${IP}/${DATE}.log"
+  echo "[$TIMESTAMP] FAILED (exit $EXIT_CODE): $USER@$IP: $CMD_LOG" >> "$LOCAL_LOG_DIR/${HOST}-${IP}/${DATE}.log"
 fi
 
 exit $EXIT_CODE
