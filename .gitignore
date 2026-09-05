@@ -14,3 +14,6 @@ Thumbs.db
 *~
 .vscode/
 .idea/
+# Python test artifacts
+__pycache__/
+*.pyc
