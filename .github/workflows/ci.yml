@@ -1,0 +1,28 @@
+name: Checks
+on: [push, pull_request]
+permissions:
+  contents: read
+jobs:
+  offline:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install ShellCheck
+        run: sudo apt-get install -y shellcheck
+      - name: Bash syntax and ShellCheck
+        run: |
+          bash -n ssh-remote.sh
+          shellcheck ssh-remote.sh
+      - name: Offline integration tests
+        run: python3 -m unittest discover -s tests -v
+  openssh:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install isolated server dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y openssh-server
+          sudo mkdir -p /run/sshd
+      - name: Real SSH and SFTP integration tests
+        run: SSH_REMOTE_REAL_TESTS=1 python3 -m unittest discover -s tests -p test_real_ssh.py -v

@@ -1,0 +1,4 @@
+# group-name  alias [alias ...]
+# Members must be defined in ssh-hosts.conf. Duplicates are run once.
+# production web01 db01
+# staging test01 test02

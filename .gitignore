@@ -17,3 +17,5 @@ Thumbs.db
 # Python test artifacts
 __pycache__/
 *.pyc
+ssh-groups.conf
+.pytest_cache/
